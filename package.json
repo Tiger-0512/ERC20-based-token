@@ -7,7 +7,6 @@
     "test": "test"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^3.1.0",
     "@truffle/hdwallet-provider": "^1.7.0",
     "chai": "^4.3.4",
     "chai-bn": "^0.3.0",
