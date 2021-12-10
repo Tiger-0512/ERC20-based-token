@@ -1,38 +1,62 @@
 import React, { Component, useEffect, useState } from "react";
 import Web3 from "web3";
 
-import getWeb3 from "./getWeb3";
 import "./App.css";
-import Header from "./modules/Header";
+import { Header } from "./modules/Header";
+
+const CONTRACT_ADDRESS = "";
 
 const App = () => {
   // Hooks initialization
   const [web3, setWeb3] = useState(null);
-  const [accounts, setAccounts] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [accounts, setAccounts] = useState([]);
   const [contract, setContract] = useState(null);
 
+  const metamaskAcc = null;
+
   useEffect(() => {
-    const f = async() => {
+    const f = async () => {
       try {
         const metamaskAcc = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
         setAccounts(metamaskAcc);
-
-      } catch(error) {
+        setIsConnected(true);
+      } catch (error) {
         alert(error.message);
       }
+    };
+    const checkStatus = async () => {
+      if (!isRopsren()) {
+        alert("Please change your network to Ropsten test network after login to Metamask")
+      }
     }
-    f();
+    f().then(
+      checkStatus()
+    )
   }, []);
+
+  const isRopsren = () => {
+    if (window.ethereum && window.ethereum.chainId != 0x3) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   return (
     <div className="App">
-      <Header />
-      { accounts }
+      <Header
+        accounts={accounts}
+        isConnected={isConnected}
+        setAccounts={setAccounts}
+        setIsConnected={setIsConnected}
+      />
+       {accounts}
     </div>
   );
-}
+};
 
 export default App;
 
@@ -63,4 +87,3 @@ export default App;
 //       // console.error(error);
 //     }
 //   };
-

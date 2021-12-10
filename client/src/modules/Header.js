@@ -1,4 +1,5 @@
 import React from "react";
+import Web3 from "web3";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ButtonAppBar() {
+export const Header = (props) => {
   const classes = useStyles();
 
   return (
@@ -41,9 +42,13 @@ export default function ButtonAppBar() {
           >
             Create Your Own Token
           </Typography>
-          <Button color="inherit">METAMASK Login</Button>
+          {props.isConnected ? (
+            `Your account: ${props.accounts[0]}`
+          ) : (
+            "Please reload and login to Metamask!"
+          )}
         </Toolbar>
       </AppBar>
     </div>
   );
-}
+};
