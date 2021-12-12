@@ -2,6 +2,7 @@ import React, { Component, useEffect, useState } from "react";
 import Web3 from "web3";
 
 import "./App.css";
+import { Exchange } from "./Exchange";
 import { Header } from "./modules/Header";
 
 const CONTRACT_ADDRESS = "";
@@ -28,20 +29,21 @@ const App = () => {
       }
     };
     const checkStatus = async () => {
+      console.log(isRopsren());
       if (!isRopsren()) {
-        alert("Please change your network to Ropsten test network after login to Metamask")
+        alert(
+          "Please change your network to Ropsten test network after login to Metamask"
+        );
       }
-    }
-    f().then(
-      checkStatus()
-    )
+    };
+    f().then(checkStatus());
   }, []);
 
   const isRopsren = () => {
-    if (window.ethereum && window.ethereum.chainId != 0x3) {
-      return false;
-    } else {
+    if (window.ethereum.chainId == 0x3) {
       return true;
+    } else {
+      return false;
     }
   };
 
@@ -53,37 +55,13 @@ const App = () => {
         setAccounts={setAccounts}
         setIsConnected={setIsConnected}
       />
-       {accounts}
+      <p style={{marginTop: "50px", marginBottom: "50px"}} >
+        This app aims to understand web3.js library and ERC20 token. <br />
+        Source Code and Document: 
+      </p>
+      <Exchange />
     </div>
   );
 };
 
 export default App;
-
-//   componentDidMount = async () => {
-//     try {
-//       // Get network provider and web3 instance.
-//       const web3 = await getWeb3();
-
-//       // Use web3 to get the user's accounts.
-//       const accounts = await web3.eth.getAccounts();
-
-//       // Get the contract instance.
-//       const networkId = await web3.eth.net.getId();
-//       const deployedNetwork = SimpleStorageContract.networks[networkId];
-//       const instance = new web3.eth.Contract(
-//         SimpleStorageContract.abi,
-//         deployedNetwork && deployedNetwork.address
-//       );
-
-//       // Set web3, accounts, and contract to the state, and then proceed with an
-//       // example of interacting with the contract's methods.
-//       this.setState({ web3, accounts, contract: instance }, this.runExample);
-//     } catch (error) {
-//       // Catch any errors for any of the above operations.
-//       // alert(
-//       //   `Failed to load web3, accounts, or contract. Check console for details.`
-//       // );
-//       // console.error(error);
-//     }
-//   };
