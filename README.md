@@ -1,5 +1,5 @@
 # ERC20-based-token
-Smart Contracts to Create ERC20 Based Tokens (With React Demo). <br>
+Smart contracts to create ERC20 based tokens (With React Demo). <br>
 You can try this smart contract by using localhost or test net (e.g., Ropsten test network)
 
 ## Dependencies
