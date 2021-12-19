@@ -3,11 +3,11 @@ import {
   Container,
   TextField,
   FormControl,
-  FormHelperText,
   MenuItem,
-  InputLabel,
   Select,
+  IconButton,
 } from "@material-ui/core";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
@@ -17,9 +17,6 @@ const useStyles = makeStyles({
     backgroundColor: "#191B1F",
     borderRadius: "10px",
     padding: "20px",
-  },
-  formParent: {
-    position: "relative",
   },
   formAmount: {
     position: "absolute",
@@ -34,7 +31,6 @@ const useStyles = makeStyles({
   },
   formInputLabel: {
     color: "#3F51B5",
-    color: "white",
   },
   formInput: {
     height: "50px",
@@ -46,6 +42,10 @@ const useStyles = makeStyles({
 export const Exchange = () => {
   const classes = useStyles();
   const [token, setToken] = React.useState("");
+  const tokens = [
+    { name: "dai", symbol: "DAI" },
+    { name: "eth", symbol: "ETH" },
+  ];
 
   const handleChange = (event) => {
     setToken(event.target.value);
@@ -54,7 +54,7 @@ export const Exchange = () => {
   return (
     <Container className={classes.root}>
       <h2 style={{ color: "white" }}>Swap</h2>
-      <div className={classes.formParent}>
+      <div style={{ position: "relative" }}>
         <TextField
           className={classes.formAmount}
           id="outlined-basic"
@@ -76,7 +76,7 @@ export const Exchange = () => {
           ETH
         </div>
       </div>
-      <div className={classes.formParent} style={{ top: "100px" }}>
+      <div style={{ position: "relative", top: "100px" }}>
         <TextField
           className={classes.formAmount}
           id="outlined-basic"
@@ -109,13 +109,24 @@ export const Exchange = () => {
               <MenuItem value="" disabled>
                 Select a Token
               </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {tokens.map((token) => (
+                <MenuItem value={token.name}>{token.symbol}</MenuItem>
+              ))}
             </Select>
           </FormControl>
         </div>
       </div>
+      <IconButton
+        aria-label="arrow-down"
+        style={{
+          left: "0",
+          right: "0",
+          margin: "auto",
+          top: "65px",
+        }}
+      >
+        <ArrowDownwardIcon fontSize="large" style={{ color: "white" }} />
+      </IconButton>
     </Container>
   );
 };
