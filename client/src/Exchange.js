@@ -42,14 +42,20 @@ const useStyles = makeStyles({
 export const Exchange = () => {
   const classes = useStyles();
   const [token, setToken] = React.useState("");
+  const [sendAmount, setSendAmount] = React.useState(0);
   const tokens = [
     { name: "dai", symbol: "DAI" },
     { name: "eth", symbol: "ETH" },
   ];
 
-  const handleChange = (event) => {
+  const handleTokenChange = (event) => {
     setToken(event.target.value);
   };
+  const handleSendAmountChange = (event) => {
+    setSendAmount(event.target.value);
+  };
+
+  const getTokenPrice = () => {};
 
   return (
     <Container className={classes.root}>
@@ -63,6 +69,7 @@ export const Exchange = () => {
           InputLabelProps={{ className: classes.formInputLabel }}
           inputProps={{ className: classes.formInput }}
           fullWidth
+          onChange={handleSendAmountChange}
         />
         <div
           className={classes.formToken}
@@ -96,7 +103,6 @@ export const Exchange = () => {
           <FormControl variant="filled">
             <Select
               value={token}
-              onChange={handleChange}
               displayEmpty
               inputProps={{ "aria-label": "Without label" }}
               style={{
@@ -105,6 +111,7 @@ export const Exchange = () => {
                 fontSize: "24px",
                 borderRadius: "10px",
               }}
+              onChange={handleTokenChange}
             >
               <MenuItem value="" disabled>
                 Select a Token

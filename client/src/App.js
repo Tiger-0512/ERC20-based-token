@@ -13,11 +13,11 @@ const App = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [contract, setContract] = useState(null);
-
+  const [tokenPrices, setTokenPrices] = useState({});
   const metamaskAcc = null;
 
   useEffect(() => {
-    const f = async () => {
+    const connectMetamask = async () => {
       try {
         const metamaskAcc = await window.ethereum.request({
           method: "eth_requestAccounts",
@@ -36,7 +36,31 @@ const App = () => {
         );
       }
     };
-    f().then(checkStatus());
+    const getTokenPrice = async () => {
+      const bnbPrice = await (
+        await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=eth"
+        )
+      ).json();
+      const dotPrice = await (
+        await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=polkadot&vs_currencies=eth"
+        )
+      ).json();
+      const batPrice = await (
+        await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=basic-attention-token&vs_currencies=eth"
+        )
+      ).json();
+      setTokenPrices({
+        bnbToEth: bnbPrice.binancecoin.eth,
+        dotToEth: dotPrice.polkadot.eth,
+        batToEth: batPrice["basic-attention-token"].eth,
+      });
+    };
+
+    connectMetamask().then(checkStatus());
+    getTokenPrice();
   }, []);
 
   const isRopsren = () => {
@@ -55,9 +79,12 @@ const App = () => {
         setAccounts={setAccounts}
         setIsConnected={setIsConnected}
       />
-      <p style={{marginTop: "50px", marginBottom: "50px"}} >
+      <p style={{ marginTop: "50px", marginBottom: "50px" }}>
         This app aims to understand web3.js library and ERC20 token. <br />
-        Source Code and Document: <a href="https://github.com/Tiger-0512/ERC20-based-token">Tiger-0512/ERC20-based-token</a>
+        Source Code and Document:{" "}
+        <a href="https://github.com/Tiger-0512/ERC20-based-token">
+          Tiger-0512/ERC20-based-token
+        </a>
       </p>
       <Exchange />
     </div>
