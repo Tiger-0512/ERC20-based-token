@@ -5,7 +5,7 @@ pragma solidity >=0.4.21 <0.7.0;
 import "./ERC20.sol";
 
 
-contract MyToken {
+contract Dex {
     event buy(address account, address _tokenAddr, uint _cost, uint _amount);
     event sell(address account, address _tokenAddr, uint _cost, uint _amount);
 

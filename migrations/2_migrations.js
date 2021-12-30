@@ -3,7 +3,7 @@ const Binance = artifacts.require("Binance");
 const Polkadot = artifacts.require("Polkadot");
 const BasicAttentionToken = artifacts.require("BasicAttentionToken");
 
-const MyToken = artifacts.require("MyToken");
+const Dex = artifacts.require("Dex");
 
 const toWei = (number) => web3.utils.toWei(web3.utils.toBN(number), "ether");
 
@@ -18,11 +18,11 @@ module.exports = async function (deployer) {
   await deployer.deploy(BasicAttentionToken, "BasicAttentionToken", "BAT", toWei(10 ** 4));
   const bat = await BasicAttentionToken.deployed();
 
-  await deployer.deploy(MyToken, [binance.address, polka.address, bat.address]);
-  const myToken = await MyToken.deployed();
+  await deployer.deploy(Dex, [binance.address, polka.address, bat.address]);
+  const dex = await Dex.deployed();
 
-  // // When test the contracts, comment out next lines
-  // await binance.transfer(myToken.address, toWei(10**10));
-  // await polka.transfer(myToken.address, toWei(10**6));
-  // await bat.transfer(myToken.address, toWei(10**4));
+  // When test the contracts, comment out next lines
+  await binance.transfer(dex.address, toWei(10**10));
+  await polka.transfer(dex.address, toWei(10**6));
+  await bat.transfer(dex.address, toWei(10**4));
 };

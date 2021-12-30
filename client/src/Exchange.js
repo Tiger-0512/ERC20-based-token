@@ -42,6 +42,11 @@ const useStyles = makeStyles({
 });
 
 export const Exchange = (props) => {
+  const bnbAddr = "0x239fcBB49da5310DfdD54Bd9A89384098ce55E77";
+  const dotAddr = "0xa6945A317D382856a1bC77358fFc89ABcE5B6D11";
+  const batAddr = "0x8bBe3E2E95015B4aC23370306590c961Ed187db7";
+  const dexAddr = "0x5cc681b405dc41aB271086931D3c19590BB52fE4";
+
   const classes = useStyles();
   const [token, setToken] = React.useState("");
   const [sendAmount, setSendAmount] = React.useState(0);

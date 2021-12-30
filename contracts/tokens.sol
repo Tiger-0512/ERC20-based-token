@@ -10,11 +10,13 @@ contract Binance is ERC20 {
     }
 }
 
+
 contract Polkadot is ERC20 {
     constructor(string memory _name, string memory _symbol, uint256 _totalSupply) ERC20(_name, _symbol, _totalSupply) public {
 
     }
 }
+
 
 contract BasicAttentionToken is ERC20 {
     constructor(string memory _name, string memory _symbol, uint256 _totalSupply) ERC20(_name, _symbol, _totalSupply) public {
