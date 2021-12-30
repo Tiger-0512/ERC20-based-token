@@ -1,4 +1,4 @@
-const Dai = artifacts.require("Dai");
+const Binance = artifacts.require("Binance");
 const MyToken = artifacts.require("MyToken");
 
 const BN = require("bn.js");
@@ -9,16 +9,16 @@ chai.use(require("chai-bn")(BN));
 const truffleAssert = require("truffle-assertions");
 
 contract("MyToken test", (accounts) => {
-  let dai, myToken;
+  let binance, myToken;
 
   const owner = accounts[0];
   const alice = accounts[1];
 
   before(async () => {
-    dai = await Dai.deployed();
+    binance = await Binance.deployed();
     myToken = await MyToken.deployed();
 
-    await dai.transfer(myToken.address, await dai.totalSupply());
+    await binance.transfer(myToken.address, await binance.totalSupply());
   });
 
   describe("Buy token test", () => {
@@ -30,7 +30,7 @@ contract("MyToken test", (accounts) => {
     });
 
     it("Should pass when every paramter is valid", async () => {
-      const tokenAddr = dai.address;
+      const tokenAddr = binance.address;
       await truffleAssert.passes(
         myToken.buyToken(tokenAddr, "100", "10000", {
           value: "100",
@@ -40,7 +40,7 @@ contract("MyToken test", (accounts) => {
     });
 
     it("Should update myToken and alice balance after buying", async () => {
-      const aliceDai = await dai.balanceOf(alice);
+      const aliceDai = await binance.balanceOf(alice);
       const myTokenEth = await web3.eth.getBalance(myToken.address);
 
       expect(aliceDai).to.be.bignumber.equal(new BN(10000));
@@ -50,12 +50,12 @@ contract("MyToken test", (accounts) => {
 
   describe("Sell token test", () => {
     it("Should only pass if alice approved token transfer", async () => {
-      const tokenAddr = dai.address;
+      const tokenAddr = binance.address;
       await truffleAssert.reverts(
         myToken.sellToken(tokenAddr, "5000", "50", { from: alice })
       );
 
-      await dai.approve(myToken.address, "5000", { from: alice });
+      await binance.approve(myToken.address, "5000", { from: alice });
 
       await truffleAssert.passes(
         myToken.sellToken(tokenAddr, "5000", "50", { from: alice })
