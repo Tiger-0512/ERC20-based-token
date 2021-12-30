@@ -14,5 +14,12 @@ You can try this smart contract by using localhost or test net (e.g., Ropsten te
 1. Install [Ganache](http://trufflesuite.com/ganache/) or [Ganache-CLI](https://github.com/trufflesuite/ganache-cli-archive), which create local blockchain.
 -->
 
+## How to Test the Contracts in Local Network
+```
+$ ganache-cli
+$ truffle console --network develop
+$ migrate or test
+```
+
 ## Notice
 I'm developing the frontend with React.

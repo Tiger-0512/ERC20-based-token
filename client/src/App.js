@@ -80,13 +80,13 @@ const App = () => {
         setIsConnected={setIsConnected}
       />
       <p style={{ marginTop: "50px", marginBottom: "50px" }}>
-        This app aims to understand web3.js library and ERC20 token. <br />
+        This app aims to understand how to use web3.js library and ERC20 token. <br />
         Source Code and Document:{" "}
         <a href="https://github.com/Tiger-0512/ERC20-based-token">
           Tiger-0512/ERC20-based-token
         </a>
       </p>
-      <Exchange />
+      <Exchange tokenPrices={tokenPrices} />
     </div>
   );
 };
