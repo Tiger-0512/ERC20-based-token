@@ -6111,10 +6111,16 @@
       "links": {},
       "address": "0x03d24c41cD5FE338dE0AF831d8Bed1e470733e2E",
       "transactionHash": "0x9a36abf6a9cabd625e68871194d7f1747b4169dafd73212b3c156d2824264339"
+    },
+    "1640890337620": {
+      "events": {},
+      "links": {},
+      "address": "0x372da3C3A35e37AfbFb0C1D54A7eFaF18CD635ED",
+      "transactionHash": "0xd3427e4a510919b2e461f60a39b1ecc972088c69cdd5826fc59dab861e4df9b3"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-12-30T08:28:51.682Z",
+  "updatedAt": "2021-12-30T18:53:21.412Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

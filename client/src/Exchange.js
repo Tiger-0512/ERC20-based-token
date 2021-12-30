@@ -11,6 +11,8 @@ import {
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { makeStyles } from "@material-ui/core/styles";
 
+import { abi } from "./abi";
+
 const useStyles = makeStyles({
   root: {
     width: "600px",
@@ -42,16 +44,16 @@ const useStyles = makeStyles({
 });
 
 export const Exchange = (props) => {
-  const bnbAddr = "0x239fcBB49da5310DfdD54Bd9A89384098ce55E77";
-  const dotAddr = "0xa6945A317D382856a1bC77358fFc89ABcE5B6D11";
-  const batAddr = "0x8bBe3E2E95015B4aC23370306590c961Ed187db7";
-  const dexAddr = "0x5cc681b405dc41aB271086931D3c19590BB52fE4";
+  const bnbAddr = "0x2b932173C3aF27840103B29D11Cf6773f5916406";
+  const dotAddr = "0xfcf451c44E372141CBf5cD0c7305dcbbAc185719";
+  const batAddr = "0x77ea646214B08A0A5B7C70f6DB600b375b06D17f";
 
   const classes = useStyles();
   const [token, setToken] = React.useState("");
   const [sendAmount, setSendAmount] = React.useState(0);
   const [output, setOutput] = React.useState(0.0);
   const [buyState, setBuyState] = React.useState(true);
+  const [tokenInst, setTokenInst] = React.useState(NaN);
   const tokens = [
     { name: "binance", symbol: "BNB" },
     { name: "polkadot", symbol: "DOT" },
@@ -64,31 +66,39 @@ export const Exchange = (props) => {
   const handleSendAmountChange = (event) => {
     setSendAmount(event.target.value);
   };
-  const handleBuyStateChange = (event) => {
+  const handleBuyStateChange = () => {
     setBuyState(!buyState);
+  };
+  const handleTokenInstChange = (addr) => {
+    if (props.user) {
+      setTokenInst(new props.web3.eth.Contract(abi.token, addr, {from: props.user}));
+    }
   };
 
   useEffect(() => {
     let _output;
-      switch (token) {
-        case "binance":
-          _output = buyState
-            ? sendAmount / props.tokenPrices.bnbToEth
-            : sendAmount * props.tokenPrices.bnbToEth;
-          break;
-        case "polkadot":
-          _output = buyState
-            ? sendAmount / props.tokenPrices.dotToEth
-            : sendAmount * props.tokenPrices.dotToEth;
-          break;
-        case "basicAttentionToken":
-          _output = buyState
-            ? sendAmount / props.tokenPrices.batToEth
-            : sendAmount * props.tokenPrices.batToEth;
-          break;
-        default:
-          _output = 0.0;
-      }
+    switch (token) {
+      case "binance":
+        handleTokenInstChange(bnbAddr);
+        _output = buyState
+          ? sendAmount / props.tokenPrices.bnbToEth
+          : sendAmount * props.tokenPrices.bnbToEth;
+        break;
+      case "polkadot":
+        handleTokenInstChange(dotAddr);
+        _output = buyState
+          ? sendAmount / props.tokenPrices.dotToEth
+          : sendAmount * props.tokenPrices.dotToEth;
+        break;
+      case "basicAttentionToken":
+        handleTokenInstChange(batAddr);
+        _output = buyState
+          ? sendAmount / props.tokenPrices.batToEth
+          : sendAmount * props.tokenPrices.batToEth;
+        break;
+      default:
+        _output = 0.0;
+    }
     setOutput(_output);
   }, [token, sendAmount, buyState]);
 
