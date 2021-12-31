@@ -70,7 +70,9 @@ const App = () => {
 
   useEffect(() => {
     if (accounts[0]) {
-      setDexInst(new web3.eth.Contract(abi.dex, dexAddr, {from: accounts[0]}));
+      setDexInst(
+        new web3.eth.Contract(abi.dex, dexAddr, { from: accounts[0] })
+      );
     }
   }, [web3]);
 
@@ -91,13 +93,20 @@ const App = () => {
         setIsConnected={setIsConnected}
       />
       <p style={{ marginTop: "50px", marginBottom: "50px" }}>
-        This app aims to understand how to use web3.js library and ERC20 token. <br />
+        This app aims to understand how to use web3.js library and ERC20 token.{" "}
+        <br />
         Source Code and Document:{" "}
         <a href="https://github.com/Tiger-0512/ERC20-based-token">
           Tiger-0512/ERC20-based-token
         </a>
       </p>
-      <Exchange web3={web3} user={accounts[0]} tokenPrices={tokenPrices} />
+      <Exchange
+        web3={web3}
+        user={accounts[0]}
+        tokenPrices={tokenPrices}
+        dexAddr={dexAddr}
+        dexInst={dexInst}
+      />
     </div>
   );
 };
