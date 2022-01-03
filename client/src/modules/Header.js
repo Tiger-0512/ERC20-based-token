@@ -20,18 +20,22 @@ const useStyles = makeStyles((theme) => ({
 export const Header = (props) => {
   const classes = useStyles();
 
+  const connectMetamask = async () => {
+    try {
+      const metamaskAcc = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      props.setAccounts(metamaskAcc);
+      props.setIsConnected(true);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          {/* <IconButton */}
-          {/*   edge="start" */}
-          {/*   className={classes.menuButton} */}
-          {/*   color="inherit" */}
-          {/*   aria-label="menu" */}
-          {/* > */}
-          {/*   <MenuIcon /> */}
-          {/* </IconButton> */}
           <Typography
             variant="h6"
             className={classes.title}
@@ -42,7 +46,14 @@ export const Header = (props) => {
           {props.isConnected ? (
             `Your account: ${props.accounts[0]}`
           ) : (
-            "Please reload and login to Metamask!"
+            // "Please reload and login to Metamask!"
+            <Button
+              onClick={async () => {
+                await connectMetamask();
+              }}
+            >
+              "Please push here to connect your account with metamask!"
+            </Button>
           )}
         </Toolbar>
       </AppBar>

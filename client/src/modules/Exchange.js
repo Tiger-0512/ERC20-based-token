@@ -1,4 +1,3 @@
-// ToDo: checkBalanceの反映
 import React, { useEffect } from "react";
 import {
   Box,
@@ -7,18 +6,25 @@ import {
   FormControl,
   MenuItem,
   Select,
+  Typography,
   Button,
   IconButton,
+  makeStyles,
 } from "@material-ui/core";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
-import { makeStyles } from "@material-ui/core/styles";
 
-import { abi } from "./abi";
+import { ShowResults } from "./ShowResults";
+import ABI from "../contracts/ERC20.json";
+
+const abi = ABI.abi;
+const bnbAddr = "0x9120174A9bA340a2388E372f55290a1be39ab1C4";
+const dotAddr = "0xAA20b95f14d45Bc7dD3F61787594F28075c17DC5";
+const batAddr = "0xDC0198B26BcB196B0F8885202B6822D799D5079a";
 
 const useStyles = makeStyles({
   root: {
     width: "600px",
-    height: "380px",
+    height: "500px",
     backgroundColor: "#191B1F",
     borderRadius: "10px",
     padding: "20px",
@@ -35,6 +41,14 @@ const useStyles = makeStyles({
   formToken: {
     position: "absolute",
     right: "0px",
+  },
+  formSelect: {
+    color: "white",
+    backgroundColor: "#3F51B5",
+    fontSize: "24px",
+    borderRadius: "10px",
+    marginTop: "12px",
+    marginRight: "25px",
   },
   formInputLabel: {
     color: "#3F51B5",
@@ -56,27 +70,20 @@ const useStyles = makeStyles({
 });
 
 export const Exchange = (props) => {
-  const bnbAddr = "0x2b932173C3aF27840103B29D11Cf6773f5916406";
-  const dotAddr = "0xfcf451c44E372141CBf5cD0c7305dcbbAc185719";
-  const batAddr = "0x77ea646214B08A0A5B7C70f6DB600b375b06D17f";
-
   const classes = useStyles();
-  const [token, setToken] = React.useState("");
+  const [selectedToken, setSelectedToken] = React.useState("");
   const [sendAmount, setSendAmount] = React.useState(0);
   const [sendAmountWei, setSendAmountWei] = React.useState(null);
   const [output, setOutput] = React.useState(0);
   const [outputWei, setOutputWei] = React.useState(null);
   const [buyState, setBuyState] = React.useState(true);
   const [tokenInst, setTokenInst] = React.useState(null);
-  const [buttonState, setButtonState] = React.useState(false);
-  const tokens = [
-    { name: "binance", symbol: "BNB" },
-    { name: "polkadot", symbol: "DOT" },
-    { name: "basicAttentionToken", symbol: "BAT" },
-  ];
+  const [inputState, setInputState] = React.useState(false);
+  const [balanceEnough, setBalanceEnough] = React.useState(false);
+  const [exchangeState, setExchangeState] = React.useState(false);
 
   const handleTokenChange = (event) => {
-    setToken(event.target.value);
+    setSelectedToken(event.target.value);
   };
   const handleSendAmountChange = (event) => {
     setSendAmount(event.target.value);
@@ -93,10 +100,10 @@ export const Exchange = (props) => {
   const handleBuyStateChange = () => {
     setBuyState(!buyState);
   };
-  const handleTokenInstChange = (addr) => {
+  const handleTokenInstChange = async (addr) => {
     if (props.user) {
       setTokenInst(
-        new props.web3.eth.Contract(abi.token, addr, { from: props.user })
+        await new props.web3.eth.Contract(abi, addr, { from: props.user })
       );
     }
   };
@@ -108,8 +115,10 @@ export const Exchange = (props) => {
     const balance = parseFloat(props.web3.utils.fromWei(balanceRaw, "ether"));
 
     if (balance >= sendAmount) {
+      // setBalanceEnough(true);
       return true;
     } else {
+      // setBalanceEnough(false);
       return false;
     }
   };
@@ -121,6 +130,7 @@ export const Exchange = (props) => {
         .send({ value: sendAmountWei })
         .then((receipt) => {
           console.log(receipt);
+          setExchangeState(true);
           resolve();
         })
         .catch((err) => reject(err));
@@ -132,7 +142,8 @@ export const Exchange = (props) => {
       .call();
     if (parseInt(sendAmountWei) > parseInt(allowance)) {
       try {
-        await tokenInst.methods.approve(props.dexAddr).send();
+        await tokenInst.methods.approve(props.dexAddr, sendAmountWei).send();
+        setExchangeState(true);
       } catch (err) {
         throw err;
       }
@@ -156,44 +167,48 @@ export const Exchange = (props) => {
   };
 
   useEffect(() => {
-    let _output;
     const changeOutput = async () => {
-      switch (token) {
+      let _output;
+      switch (selectedToken) {
         case "binance":
-          handleTokenInstChange(bnbAddr);
+          await handleTokenInstChange(bnbAddr);
           _output = buyState
             ? sendAmount / props.tokenPrices.bnbToEth
             : sendAmount * props.tokenPrices.bnbToEth;
+          // await checkBalance();
           break;
         case "polkadot":
-          handleTokenInstChange(dotAddr);
+          await handleTokenInstChange(dotAddr);
           _output = buyState
             ? sendAmount / props.tokenPrices.dotToEth
             : sendAmount * props.tokenPrices.dotToEth;
+          // await checkBalance();
           break;
         case "basicAttentionToken":
-          handleTokenInstChange(batAddr);
+          await handleTokenInstChange(batAddr);
           _output = buyState
             ? sendAmount / props.tokenPrices.batToEth
             : sendAmount * props.tokenPrices.batToEth;
+          // await checkBalance();
           break;
         default:
           _output = 0.0;
       }
       setOutput(_output);
-      if (props.web3) {
-        setOutputWei(props.web3.utils.toWei(_output.toString(), "ether"));
-      }
+      setOutputWei(props.web3.utils.toWei(_output.toString(), "ether"));
     };
-    changeOutput();
-  }, [token, sendAmount, buyState]);
-  useEffect(() => {
-    if (token && sendAmount) {
-      setButtonState(true);
-    } else {
-      setButtonState(false);
+    setExchangeState(false);
+    if (props.isConnected && sendAmount && selectedToken.length > 0) {
+      changeOutput();
     }
-  }, [token, sendAmount]);
+  }, [selectedToken, sendAmount, buyState]);
+  useEffect(() => {
+    if (selectedToken && sendAmount) {
+      setInputState(true);
+    } else {
+      setInputState(false);
+    }
+  }, [selectedToken, sendAmount]);
 
   return (
     <Container className={classes.root}>
@@ -223,26 +238,21 @@ export const Exchange = (props) => {
               ETH
             </div>
           ) : (
-            <FormControl variant="filled" className={classes.formToken}>
+            <FormControl className={classes.formToken} variant="outlined">
               <Select
-                value={token}
+                className={classes.formSelect}
+                value={selectedToken}
                 displayEmpty
                 inputProps={{ "aria-label": "Without label" }}
-                style={{
-                  color: "white",
-                  backgroundColor: "#3F51B5",
-                  fontSize: "24px",
-                  borderRadius: "10px",
-                  marginTop: "12px",
-                  marginRight: "25px",
-                }}
                 onChange={handleTokenChange}
               >
                 <MenuItem value="" disabled>
-                  Select a Token
+                  <em>Select a Token</em>
                 </MenuItem>
-                {tokens.map((token) => (
-                  <MenuItem value={token.name}>{token.symbol}</MenuItem>
+                {props.tokens.map((token) => (
+                  <MenuItem value={token.name}>
+                    <Typography variant="inherit">{token.symbol}</Typography>
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -262,29 +272,24 @@ export const Exchange = (props) => {
               paddingLeft: "15px",
             }}
           >
-            {output}
+            {output.toFixed((5))}
           </Box>
           {buyState ? (
-            <FormControl variant="filled" className={classes.formToken}>
+            <FormControl className={classes.formToken} variant="outlined">
               <Select
-                value={token}
+                className={classes.formSelect}
+                value={selectedToken}
                 displayEmpty
                 inputProps={{ "aria-label": "Without label" }}
-                style={{
-                  color: "white",
-                  backgroundColor: "#3F51B5",
-                  fontSize: "24px",
-                  borderRadius: "10px",
-                  marginTop: "12px",
-                  marginRight: "25px",
-                }}
                 onChange={handleTokenChange}
               >
                 <MenuItem value="" disabled>
-                  Select a Token
+                  <em>Select a Token</em>
                 </MenuItem>
-                {tokens.map((token) => (
-                  <MenuItem value={token.name}>{token.symbol}</MenuItem>
+                {props.tokens.map((token) => (
+                  <MenuItem value={token.name}>
+                    <Typography variant="inherit">{token.symbol}</Typography>
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -319,13 +324,37 @@ export const Exchange = (props) => {
         className={classes.button}
         variant="contained"
         color="primary"
-        disabled={!buttonState}
+        // disabled={!inputState || !balanceEnough}
+        disabled={!inputState}
         onClick={async () => {
-          await exchange();
+          if (await checkBalance()) {
+            await exchange();
+          } else {
+            alert(`Insufficient ${buyState ? "ETH" : selectedToken} balance!`);
+          }
         }}
       >
-        {buttonState ? "Exchange" : "Please set an amount and select the token"}
+        <div>
+          {(() => {
+            // if (inputState && balanceEnough) {
+            if (inputState) {
+              return "Exchange";
+              // } else if (inputState) {
+              //   return `Insufficient ${buyState ? "ETH" : selectedToken} balance`;
+            } else {
+              return "Please set an amount and select the token";
+            }
+          })()}
+        </div>
       </Button>
+      {exchangeState && (
+        <ShowResults
+          buyState={buyState}
+          selectedToken={selectedToken}
+          sendAmount={sendAmount}
+          output={output.toFixed(5)}
+        />
+      )}
     </Container>
   );
 };
