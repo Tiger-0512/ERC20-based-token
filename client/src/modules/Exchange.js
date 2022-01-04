@@ -17,9 +17,6 @@ import { ShowResults } from "./ShowResults";
 import ABI from "../contracts/ERC20.json";
 
 const abi = ABI.abi;
-const bnbAddr = "0x9120174A9bA340a2388E372f55290a1be39ab1C4";
-const dotAddr = "0xAA20b95f14d45Bc7dD3F61787594F28075c17DC5";
-const batAddr = "0xDC0198B26BcB196B0F8885202B6822D799D5079a";
 
 const useStyles = makeStyles({
   root: {
@@ -171,21 +168,21 @@ export const Exchange = (props) => {
       let _output;
       switch (selectedToken) {
         case "binance":
-          await handleTokenInstChange(bnbAddr);
+          await handleTokenInstChange(props.tokensAddr.bnb);
           _output = buyState
             ? sendAmount / props.tokenPrices.bnbToEth
             : sendAmount * props.tokenPrices.bnbToEth;
           // await checkBalance();
           break;
         case "polkadot":
-          await handleTokenInstChange(dotAddr);
+          await handleTokenInstChange(props.tokensAddr.dot);
           _output = buyState
             ? sendAmount / props.tokenPrices.dotToEth
             : sendAmount * props.tokenPrices.dotToEth;
           // await checkBalance();
           break;
         case "basicAttentionToken":
-          await handleTokenInstChange(batAddr);
+          await handleTokenInstChange(props.tokensAddr.bat);
           _output = buyState
             ? sendAmount / props.tokenPrices.batToEth
             : sendAmount * props.tokenPrices.batToEth;

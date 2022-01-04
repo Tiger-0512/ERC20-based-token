@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Grid, makeStyles } from "@material-ui/core";
 import Web3 from "web3";
 
@@ -12,11 +12,24 @@ import batIcon from "./assets/bat.png";
 
 const abi = ABI.abi;
 const dexAddr = "0x36b143C97991d7dd362A37Bae0E6637b87019e39";
+const bnbAddr = "0x9120174A9bA340a2388E372f55290a1be39ab1C4";
+const dotAddr = "0xAA20b95f14d45Bc7dD3F61787594F28075c17DC5";
+const batAddr = "0xDC0198B26BcB196B0F8885202B6822D799D5079a";
 const tokens = [
-  { name: "binance", symbol: "BNB", icon: bnbIcon },
-  { name: "polkadot", symbol: "DOT", icon: dotIcon },
-  { name: "basicAttentionToken", symbol: "BAT", icon: batIcon },
+  { name: "binance", symbol: "BNB", icon: bnbIcon, address: bnbAddr },
+  { name: "polkadot", symbol: "DOT", icon: dotIcon, address: dotAddr },
+  {
+    name: "basicAttentionToken",
+    symbol: "BAT",
+    icon: batIcon,
+    address: batAddr,
+  },
 ];
+const tokensAddr = {
+  bnb: bnbAddr,
+  dot: dotAddr,
+  bat: batAddr,
+};
 
 let web3;
 try {
@@ -128,9 +141,20 @@ const App = () => {
         </a>
       </p>
       <p>
-        <Container style={{ width: "450px" }}>
+        <Container style={{ width: "950px" }}>
+          <Grid container spacing={1}>
+            <Grid item xs={3}>
+              <b>Token Name</b>
+            </Grid>
+            <Grid item xs={6}>
+              <b>Token Contract Addres</b>
+            </Grid>
+            <Grid item xs={3}>
+              <b>Exchange Rate</b>
+            </Grid>
+          </Grid>
           {tokens.map((token) => (
-            <Grid container spacing={0}>
+            <Grid container spacing={1}>
               <Grid item xs={1}>
                 <img
                   className={classes.icon}
@@ -138,10 +162,13 @@ const App = () => {
                   alt="tokenIcon"
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={2}>
                 {token.name}
               </Grid>
-              <Grid item xs={7}>
+              <Grid item xs={6}>
+                {token.address}
+              </Grid>
+              <Grid item xs={3}>
                 1 ETH = {shownTokenPrices[token.symbol]} {token.symbol}
               </Grid>
             </Grid>
@@ -150,10 +177,11 @@ const App = () => {
       </p>
 
       <Exchange
-        tokens={tokens}
         web3={web3}
         user={accounts[0]}
+        tokens={tokens}
         tokenPrices={tokenPrices}
+        tokensAddr={tokensAddr}
         dexAddr={dexAddr}
         dexInst={dexInst}
         isConnected={isConnected}
