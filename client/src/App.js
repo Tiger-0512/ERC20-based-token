@@ -11,10 +11,10 @@ import dotIcon from "./assets/dot.png";
 import batIcon from "./assets/bat.png";
 
 const abi = ABI.abi;
-const dexAddr = "0x36b143C97991d7dd362A37Bae0E6637b87019e39";
-const bnbAddr = "0x9120174A9bA340a2388E372f55290a1be39ab1C4";
-const dotAddr = "0xAA20b95f14d45Bc7dD3F61787594F28075c17DC5";
-const batAddr = "0xDC0198B26BcB196B0F8885202B6822D799D5079a";
+const dexAddr = "0xaDebBb110bE210956119D824A7876b7743F73b6c";
+const bnbAddr = "0x3cBd22BdB206C60C721465005B93E03fa3dA47C9";
+const dotAddr = "0xfFf45E2e36406211C0abE790ac030308d56383a8";
+const batAddr = "0x27aAF2506d02B1e14cEfFD77A088B53a7AeB51Ae";
 const tokens = [
   { name: "binance", symbol: "BNB", icon: bnbIcon, address: bnbAddr },
   { name: "polkadot", symbol: "DOT", icon: dotIcon, address: dotAddr },
