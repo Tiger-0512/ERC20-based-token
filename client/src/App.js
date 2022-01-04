@@ -35,8 +35,8 @@ let web3;
 try {
   web3 = new Web3(
     new Web3.providers.HttpProvider(
-      // "https://ropsten.infura.io/v3/YOUR_INFURA_PROJECT_ID"
-      "http://localhost:8545"
+      // "http://localhost:8545"
+      `https://ropsten.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     )
   );
 } catch (error) {
