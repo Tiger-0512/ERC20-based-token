@@ -31,14 +31,12 @@ const tokensAddr = {
   bat: batAddr,
 };
 
-const infuraProjectID = process.env.INFURA_PROJECT_ID.toString();
-
 let web3;
 try {
   web3 = new Web3(
     new Web3.providers.HttpProvider(
       // "http://localhost:8545"
-      `https://ropsten.infura.io/v3/${infuraProjectID}`
+      `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_PROJECT_ID}`
     )
   );
 } catch (error) {
